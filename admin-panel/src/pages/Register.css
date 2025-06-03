@@ -1,0 +1,81 @@
+.auth-page {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.auth-left-panel {
+  flex: 1;
+  background-color: #2874f0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.site-name {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.tagline {
+  font-size: 20px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.auth-right-panel {
+  flex: 1;
+  background-color: #f1f3f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-form {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form h2 {
+  margin-bottom: 24px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.submit-btn {
+  background-color: #fb641b;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #e56117;
+}
+
+.redirect-text {
+  text-align: center;
+  margin-top: 16px;
+}
