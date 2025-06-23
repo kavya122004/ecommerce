@@ -18,7 +18,7 @@ const WomenPage = () => {
 
   return (
     <div className="category-page">
-      <h1>Gift's Collection</h1>
+      <h1>Women Collection</h1>
 
       {loading ? (
         <div className="spinner-container">

@@ -7,14 +7,20 @@ import WomenPage from './pages/WomenPage';
 import MenPage from './pages/MenPage';
 import KidsPage from './pages/KidsPage';
 import GiftsPage from './pages/GiftsPage';
+import BeautyPage from './pages/BeautyPage';
 import ProtectedRoute from './pages/ProtectedRoute';
 import ProductDetails from './pages/ProductDetails';
 import WishlistPage from './pages/WishlistPage';
 import BuyPage from './pages/BuyPage';
+import Homepage from './pages/Homepage';
 import { ProductsProvider } from './ProductsContext';
 import { WishlistProvider } from './WishlistContext';
 import { OrderProvider } from './OrderContext';
 import Navbar from './components/Navbar';
+//  import HeroSection from './components/HeroSection';
+// import ProductsPage from './components/ProductsPage'; // your existing layout
+
+
 
 const HomeRedirect = () => {
   const { user } = useAuth();
@@ -41,7 +47,7 @@ function App() {
               <Navbar />
               <Routes>
                 {/* Redirect routes */}
-                <Route path="/" element={<HomeRedirect />} />
+                <Route path="/" element={<Homepage />} />
                 <Route path="/login" element={<LoginRedirect />} />
                 <Route path="/register" element={<RegisterRedirect />} />
 
@@ -53,9 +59,11 @@ function App() {
                 <Route path="/men" element={<MenPage />} />
                 <Route path="/kids" element={<KidsPage />} />
                 <Route path="/gifts" element={<GiftsPage />} />
+                <Route path="/beauty" element={<BeautyPage />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/wishlist" element={<WishlistPage />} />
                 <Route path="/buy" element={<BuyPage />} />
+               
               </Routes>
             </OrderProvider>
           </ProductsProvider>

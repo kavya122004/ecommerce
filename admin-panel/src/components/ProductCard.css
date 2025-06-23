@@ -1,3 +1,4 @@
+/* Product Card Container */
 .product-card-container {
   background: #fff;
   transition: transform 0.3s ease;
@@ -10,12 +11,14 @@
   transform: scale(1.02);
 }
 
+/* Product Card Link */
 .product-card-link {
   text-decoration: none;
   color: inherit;
   display: block;
 }
 
+/* Image Wrapper */
 .product-card-image-wrapper {
   position: relative;
   width: 100%;
@@ -23,6 +26,17 @@
   overflow: hidden;
 }
 
+/* Scroll-Driven Rotation Animation */
+@keyframes scroll-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Product Card Image */
 .product-card-image {
   position: absolute;
   top: 0;
@@ -30,8 +44,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  
+  /* Rotation effect on scroll */
+  animation: scroll-rotate 1.5s linear infinite;
+  animation-timeline: scroll();
+  animation-range: entry 0% exit 100%;
 }
 
+/* Wishlist Button */
 .product-card-wishlist-btn {
   position: absolute;
   top: 10px;
@@ -46,6 +66,21 @@
   color: #f00;
 }
 
+/* Edit Button */
+.edit-btn {
+  position: absolute;
+  top: 8px;
+  right: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  z-index: 2;
+  border-radius: 4px;
+}
+
+/* Product Info */
 .product-card-info {
   padding: 10px 12px;
 }
@@ -63,16 +98,13 @@
   margin-top: 4px;
 }
 
-
-.edit-btn {
-  position: absolute;
-  top: 8px;
-  right: 40px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  z-index: 2;
-  border-radius: 4px;
+/* Fallback for browsers without scroll-driven animations */
+@supports not (animation-timeline: scroll()) {
+  .product-card-image {
+    transition: transform 0.5s ease;
+  }
+  
+  .product-card-image-wrapper:hover .product-card-image {
+    transform: rotate(360deg);
+  }
 }

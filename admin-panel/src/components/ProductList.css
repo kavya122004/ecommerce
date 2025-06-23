@@ -1,0 +1,48 @@
+/* components/ProductList.css */
+
+/* Default: Grid Layout (for other pages) */
+.product-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Responsive grid */
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Horizontal Layout for HomePage */
+.product-list-container.horizontal {
+  display: flex;
+  overflow-x: auto;  /* Enable horizontal scrolling */
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+  scroll-snap-type: x mandatory; /* Snap to each product */
+  width: 100%; /* Ensure container takes full width */
+}
+
+.product-list-container.horizontal > * {
+  scroll-snap-align: start; /* Align each product to the left when scrolling */
+  flex-shrink: 0; /* Prevent shrinking */
+  flex-basis: 220px; /* Set a minimum width for each product */
+}
+
+/* Grid Layout for large screens */
+@media (min-width: 1024px) {
+  .product-list-container.grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+  }
+}
+
+/* Grid Layout for tablets */
+@media (max-width: 1024px) and (min-width: 601px) {
+  .product-list-container.grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+  }
+}
+
+/* Grid Layout for mobile */
+@media (max-width: 600px) {
+  .product-list-container.grid {
+    grid-template-columns: 1fr; /* 1 column on mobile */
+  }
+}

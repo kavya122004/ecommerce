@@ -10,6 +10,7 @@ const AdminPanel = () => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
+    description: '',
     category: 'women',
     image: ''
   });
@@ -110,6 +111,7 @@ const AdminPanel = () => {
               <option value="men">Men</option>
               <option value="kids">Kids</option>
               <option value="gift">Gift</option>
+              <option value="beauty">Beauty</option>
             </select>
             <input
               type="text"

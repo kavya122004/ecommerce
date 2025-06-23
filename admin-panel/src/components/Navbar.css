@@ -1,7 +1,8 @@
+
 .navbar {
   background-color: #fff;
   border-bottom: 1px solid #eee;
-  padding: 10px 20px;
+  padding: 20px 30px; /* Increased padding for larger height */
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -12,13 +13,41 @@
   justify-content: space-between;
   align-items: center;
 }
+.navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
+.navbar-search input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.navbar-search button {
+  padding: 6px 12px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Updated logo styling */
 .navbar-logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #000;
+  display: flex;
+  align-items: center;
   text-decoration: none;
 }
+
+
+.logo-image {
+  height: 40px; /* Increased height */
+  width: auto;
+  object-fit: contain;
+}
+
 
 .navbar-links {
   display: flex;

@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
 
 // POST /products - Add a new product
 router.post('/', async (req, res) => {
-  const { name, price, category, image } = req.body;
+  const { name, price, category, image, description } = req.body;
 
   if (!name || !price || !category || !image) {
     return res.status(400).json({ error: 'All fields are required' });
@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
 
   try {
     const uniqueId = crypto.randomBytes(8).toString('hex');
-    const newProduct = new Product({ uniqueId, name, price, category, image });
+    const newProduct = new Product({ uniqueId, name, price, category, image, description });
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (err) {
@@ -74,7 +74,9 @@ router.delete('/:id', async (req, res) => {
 // PUT /products/:id - Update an existing product
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, price, category, image } = req.body;
+  console.log('Red Bidy');
+  console.log(req.body);
+  const { name, price, category, image, description } = req.body;
 
   if (!name || !price || !category || !image) {
     return res.status(400).json({ error: 'All fields are required' });
@@ -83,7 +85,7 @@ router.put('/:id', async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { name, price, category, image },
+      { name, price, category, image, description },
       { new: true, runValidators: true } // return the updated doc and validate inputs
     );
 
