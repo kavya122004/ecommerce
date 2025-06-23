@@ -107,4 +107,25 @@
   .product-card-image-wrapper:hover .product-card-image {
     transform: rotate(360deg);
   }
+}/* Dot container */
+.image-dots {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
 }
+
+/* Dot style */
+.image-dots .dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s;
+}
+
+.image-dots .dot.active {
+  background-color: #3498db;
+}
+
+

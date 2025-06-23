@@ -1,218 +1,171 @@
 import React, { useState, useEffect } from 'react';
-import { useProducts } from '../ProductsContext'; // Import the context
-import ProductList from '../components/ProductList'; // Import the ProductList component
+import { useProducts } from '../ProductsContext';
+import ProductList from '../components/ProductList';
 import './AdminPanel.css';
 
 const AdminPanel = () => {
+  const { products, loading, fetchProducts, addProduct, deleteProduct, updateProduct } = useProducts();
+  const initialForm = {
+    name: '', price: '', description: '',
+    category: 'women', image: '',
+    images: [''], // start with one URL field
+    sizes: [], specifications: {}
+  };
+  const [formData, setFormData] = useState(initialForm);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
-  const { products, loading, fetchProducts, addProduct, deleteProduct, updateProduct } = useProducts(); // Destructure required functions and state from context
-  const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    description: '',
-    category: 'women',
-    image: ''
-  });
+  const [hasFetched, setHasFetched] = useState(false);
 
-  const [hasFetched, setHasFetched] = useState(false); // State to track if products have been fetched
-
-  // Fetch products from the context on component mount, but only if they haven't been fetched yet
   useEffect(() => {
-    if (!hasFetched && products.length === 0 && !loading) {
+    if (!hasFetched && !loading && products.length === 0) {
       fetchProducts();
-      setHasFetched(true); // Set the flag to true after fetching
+      setHasFetched(true);
     }
-  }, [fetchProducts, products.length, loading, hasFetched]);
+  }, [hasFetched, loading, products.length, fetchProducts]);
 
-  // Handle adding a product to the database
+  const handleImageChange = (i, val) => {
+    const imgs = [...formData.images];
+    imgs[i] = val;
+    setFormData({ ...formData, images: imgs });
+  };
+
+  const handleAddImage = () =>
+    setFormData({ ...formData, images: [...formData.images, ''] });
+
+  const handleRemoveImage = (i) =>
+    setFormData({ ...formData, images: formData.images.filter((_, idx) => idx !== i) });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const productData = {
+    const payload = {
       ...formData,
-      price: parseFloat(formData.price),
-    };
+      price: parseFloat(formData.price) || 0,
 
-    try {
-      if (isEditMode && editingProductId) {
-        // Update existing product
-        await updateProduct(editingProductId, productData);
-        setIsEditMode(false);
-        setEditingProductId(null);
-      } else {
-        // Add new product
-        await addProduct(productData);
-      }
+      images: formData.images.filter(u => u.trim()),
+    };  console.log('Payload being sent:', payload);
 
-      // Reset form
-      setFormData({ name: '', price: '', category: 'women', image: '' });
-    } catch (error) {
-      console.error('Error saving product:', error);
-    }
+    if (isEditMode && editingProductId) await updateProduct(editingProductId, payload);
+    else await addProduct(payload);
+
+    setFormData(initialForm);
+    setIsEditMode(false);
+    setEditingProductId(null);
   };
 
-
-  // Handle deleting a product
-  const handleDelete = async (id) => {
-    try {
-      await deleteProduct(id); // Delete product using context's deleteProduct function
-    } catch (error) {
-      console.error('Error deleting product:', error);
-    }
-  };
-
-  const handleEdit = (product) => {
+  const handleEdit = (p) => {
     setFormData({
-      name: product.name || '',
-      price: product.price || '',
-      category: product.category || 'women',
-      image: product.image || '',
-      images: product.images || [],
-      sizes: product.sizes || [],
-      description: product.description || '',
-      specifications: product.specifications
-        ? Object.fromEntries(product.specifications)
-        : {},
+      name: p.name || '',
+      price: p.price?.toString() || '',
+      description: p.description || '',
+      category: p.category || 'women',
+      image: p.image || '',
+      images: p.images?.length ? p.images : [''],
+      sizes: p.sizes || [],
+      specifications: p.specifications ? Object.fromEntries(p.specifications) : {},
     });
-
     setIsEditMode(true);
-    setEditingProductId(product._id);
+    setEditingProductId(p._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-
   return (
     <div className="admin-panel-container">
-      {/* Add New Product Form */}
       <div className="add-product-form-container">
-        <h2>Add New Product</h2>
+        <h2>{isEditMode ? 'Edit Product' : 'Add New Product'}</h2>
         <form onSubmit={handleSubmit} className="add-product-form">
+          {/* Main Fields */}
           <div className="form-row">
-            <input
-              type="text"
-              placeholder="Product Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-            <input
-              type="number"
-              placeholder="Price"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              required
-            />
-            <select
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            >
-              <option value="women">Women</option>
-              <option value="men">Men</option>
-              <option value="kids">Kids</option>
-              <option value="gift">Gift</option>
-              <option value="beauty">Beauty</option>
+            <input type="text" placeholder="Name" value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })} required />
+            <input type="number" placeholder="Price" value={formData.price}
+              onChange={e => setFormData({ ...formData, price: e.target.value })} required />
+            <select value={formData.category}
+              onChange={e => setFormData({ ...formData, category: e.target.value })}>
+              {['women','men','kids','gift','beauty'].map(c => (
+                <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+              ))}
             </select>
-            <input
-              type="text"
-              placeholder="Main Image URL"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-            />
+            <input type="text" placeholder="Main Image URL" value={formData.image}
+              onChange={e => setFormData({ ...formData, image: e.target.value })} />
           </div>
 
-          {/* New Fields Below */}
-          <textarea
-            placeholder="Description"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          />
+          <textarea placeholder="Description" value={formData.description}
+            onChange={e => setFormData({ ...formData, description: e.target.value })} />
 
-          <input
-            type="text"
-            placeholder="Additional Image URLs (comma-separated)"
-            value={formData.images?.join(',') || ''}
-            onChange={(e) => setFormData({ ...formData, images: e.target.value.split(',') })}
-          />
+          <input type="text" placeholder="Sizes (comma-separated)" value={formData.sizes.join(',')}
+            onChange={e => setFormData({
+              ...formData,
+              sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+            })} />
 
-          <input
-            type="text"
-            placeholder="Available Sizes (comma-separated)"
-            value={formData.sizes?.join(',') || ''}
-            onChange={(e) => setFormData({ ...formData, sizes: e.target.value.split(',') })}
-          />
+          {/* Dynamic Image URL Fields */}
+          <div className="image-fields-container">
+            <h4>Additional Image URLs</h4>
+            {formData.images.map((url, i) => (
+              <div key={i} className="form-row image-field-row">
+                <input type="text" placeholder={`Image URL ${i + 1}`} value={url}
+                  onChange={e => handleImageChange(i, e.target.value)} />
+                {formData.images.length > 1 && (
+                  <button type="button" className="remove-image-btn" onClick={() => handleRemoveImage(i)}>
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+            <button type="button" className="add-image-btn" onClick={handleAddImage}>
+              + Add Image
+            </button>
+          </div>
 
+          {/* Specifications */}
           <div className="specifications-inputs">
-            <h4>Specifications (key-value)</h4>
-            {Object.entries(formData.specifications || {}).map(([key, value], index) => (
-              <div key={index} className="spec-row">
-                <input
-                  type="text"
-                  placeholder="Key"
-                  value={key}
-                  onChange={(e) => {
-                    const updated = { ...formData.specifications };
-                    const newKey = e.target.value;
-                    updated[newKey] = updated[key];
-                    delete updated[key];
-                    setFormData({ ...formData, specifications: updated });
-                  }}
-                />
-                <input
-                  type="text"
-                  placeholder="Value"
-                  value={value}
-                  onChange={(e) => {
-                    const updated = { ...formData.specifications };
-                    updated[key] = e.target.value;
-                    setFormData({ ...formData, specifications: updated });
-                  }}
-                />
-                <button
-                  type="button"
+            <h4>Specifications</h4>
+            {Object.entries(formData.specifications).map(([k, v], i) => (
+              <div key={i} className="spec-row">
+                <input type="text" placeholder="Key" value={k}
+                  onChange={e => {
+                    const sp = { ...formData.specifications };
+                    const nk = e.target.value;
+                    sp[nk] = sp[k];
+                    delete sp[k];
+                    setFormData({ ...formData, specifications: sp });
+                  }} />
+                <input type="text" placeholder="Value" value={v}
+                  onChange={e => {
+                    const sp = { ...formData.specifications };
+                    sp[k] = e.target.value;
+                    setFormData({ ...formData, specifications: sp });
+                  }} />
+                <button type="button" className="remove-spec-btn"
                   onClick={() => {
-                    const updated = { ...formData.specifications };
-                    delete updated[key];
-                    setFormData({ ...formData, specifications: updated });
-                  }}
-                >
+                    const sp = { ...formData.specifications };
+                    delete sp[k];
+                    setFormData({ ...formData, specifications: sp });
+                  }}>
                   Remove
                 </button>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={() => {
-                setFormData({
-                  ...formData,
-                  specifications: { ...formData.specifications, '': '' },
-                });
-              }}
-            >
+            <button type="button" className="add-spec-btn"
+              onClick={() => setFormData({
+                ...formData,
+                specifications: { ...formData.specifications, '': '' }
+              })}>
               + Add Spec
             </button>
           </div>
 
-          <button type="submit">
+          <button type="submit" className="submit-btn">
             {isEditMode ? 'Update Product' : 'Add Product'}
           </button>
-
-
-
         </form>
-
       </div>
 
-      {/* Product List Section */}
       <div className="product-list-container">
         <h2>Product List</h2>
-        {loading ? (
-          <p>Loading products...</p>
-        ) : products.length === 0 ? (
-          <p>No products available.</p>
-        ) : (
-          <ProductList products={products} onDelete={handleDelete} onEdit={handleEdit} />
-        )}
+        {loading ? <p>Loading...</p> :
+          products.length === 0 ? <p>No products available.</p> :
+            <ProductList products={products} onDelete={deleteProduct} onEdit={handleEdit} />}
       </div>
     </div>
   );

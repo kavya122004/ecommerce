@@ -44,6 +44,8 @@ export const ProductsProvider = ({ children }) => {
   // Add a new product
   const addProduct = async (product) => {
     try {
+      console.log('Images:', product.images);
+    console.log('Number of images:', product.images.length);
       const response = await axios.post('http://localhost:5000/products', product);
       setProducts(prev => [...prev, response.data]);
       setCategoryProducts(prev => ({
