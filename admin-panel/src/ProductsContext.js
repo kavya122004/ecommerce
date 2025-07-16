@@ -20,7 +20,7 @@ export const ProductsProvider = ({ children }) => {
   const fetchProducts = async (category = '') => {
     setLoading(true);
     try {
-      let url = 'https://ecommerce-10-backend.onrender.com';
+      let url = 'http://local history:5000/products';
       if (category) {
         url += `?category=${category}`;
       }
